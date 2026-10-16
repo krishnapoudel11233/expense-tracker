@@ -1,0 +1,48 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#f5f7f5">
+    <title>{% block title %}Krishna — Expense tracker{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'expenses/styles.css' %}">
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+    <div class="app-shell">
+        <aside class="sidebar">
+            <a class="brand" href="{% url 'expense_list' %}">
+                <span class="brand-mark" aria-hidden="true">K</span>
+                <span class="brand-name">Krishna<span class="brand-period">.</span></span>
+            </a>
+            <p class="side-label">WORKSPACE</p>
+            <nav class="side-nav" aria-label="Main navigation">
+                <a class="nav-link {% if request.resolver_match.url_name == 'expense_list' %}is-active{% endif %}" href="{% url 'expense_list' %}">
+                    <span class="nav-icon" aria-hidden="true">▦</span> Overview
+                </a>
+                <a class="nav-link {% if request.resolver_match.url_name == 'expense_create' %}is-active{% endif %}" href="{% url 'expense_create' %}">
+                    <span class="nav-icon" aria-hidden="true">＋</span> Add expense
+                </a>
+            </nav>
+            <div class="sidebar-note">
+                <span class="note-icon" aria-hidden="true">✳</span>
+                <p>A little awareness goes a long way.</p>
+                <span>Keep your spending in sight.</span>
+            </div>
+            <div class="sidebar-footer"><span class="status-dot"></span> Your money, in focus</div>
+        </aside>
+
+        <main class="main-area">
+            <header class="topbar">
+                <div class="breadcrumb"><span>Workspace</span><span class="crumb-separator">/</span><strong>{% block breadcrumb %}Overview{% endblock %}</strong></div>
+                <a class="topbar-add" href="{% url 'expense_create' %}"><span aria-hidden="true">＋</span> New expense</a>
+            </header>
+            <section class="page-content">
+                {% block content %}{% endblock %}
+            </section>
+            <footer class="page-footer">A calmer way to keep track of your money <span>✳</span></footer>
+        </main>
+    </div>
+</body>
+</html>

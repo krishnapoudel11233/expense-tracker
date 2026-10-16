@@ -1,0 +1,87 @@
+{% extends 'expenses/base.html' %}
+
+{% block title %}Overview — Krishna{% endblock %}
+
+{% block content %}
+<div class="welcome-row">
+    <div>
+        <p class="eyebrow"><span class="eyebrow-dot"></span> YOUR FINANCES AT A GLANCE</p>
+        <h1>Good to see you<span class="heading-period">.</span></h1>
+        <p class="page-intro">Here's where your money has been going.</p>
+    </div>
+    <a class="button button-primary welcome-button" href="{% url 'expense_create' %}"><span aria-hidden="true">＋</span> Add an expense</a>
+</div>
+
+<section class="stats-grid" aria-label="Expense summary">
+    <article class="stat-card stat-card-primary">
+        <div class="stat-topline"><span class="stat-label">TOTAL SPENDING{% if selected_category %} · FILTERED{% endif %}</span><span class="stat-icon" aria-hidden="true">↗</span></div>
+        <p class="stat-value"><span class="currency">Rs</span> {{ total|floatformat:2 }}</p>
+        <p class="stat-caption">Across {{ expense_count }} {% if expense_count == 1 %}expense{% else %}expenses{% endif %}</p>
+        <div class="stat-decoration" aria-hidden="true"></div>
+    </article>
+    <article class="stat-card">
+        <div class="stat-topline"><span class="stat-label">RECORDED EXPENSES</span><span class="stat-icon stat-icon-soft" aria-hidden="true">▤</span></div>
+        <p class="stat-value">{{ expense_count }}</p>
+        <p class="stat-caption"> {% if selected_category %}In this category{% else %}Every expense, all in one place{% endif %}</p>
+    </article>
+    <article class="stat-card">
+        <div class="stat-topline"><span class="stat-label">CATEGORIES</span><span class="stat-icon stat-icon-soft" aria-hidden="true">◈</span></div>
+        <p class="stat-value">{{ categories|length }}</p>
+        <p class="stat-caption">Ways you organize spending</p>
+    </article>
+</section>
+
+<section class="transactions-section">
+    <div class="section-heading">
+        <div>
+            <p class="eyebrow section-eyebrow">YOUR ACTIVITY</p>
+            <h2>Recent expenses</h2>
+        </div>
+        <form class="filter-form" method="get">
+            <label class="sr-only" for="category-filter">Filter by category</label>
+            <select id="category-filter" name="category" onchange="this.form.submit()">
+                <option value="">All categories</option>
+                {% for category in categories %}
+                    <option value="{{ category.pk }}" {% if selected_category == category.pk|stringformat:"s" %}selected{% endif %}>{{ category.name }}</option>
+                {% endfor %}
+            </select>
+            {% if selected_category %}<a class="clear-filter" href="{% url 'expense_list' %}">Clear</a>{% endif %}
+        </form>
+    </div>
+
+    <div class="transaction-card">
+        {% if expenses %}
+            <div class="table-heading"><span>TRANSACTION</span><span>CATEGORY</span><span>DATE</span><span>AMOUNT</span><span class="sr-only">Actions</span></div>
+            <div class="transaction-list">
+                {% for expense in expenses %}
+                    <article class="transaction-row">
+                        <a class="transaction-main" href="{% url 'expense_detail' expense.pk %}">
+                            <span class="category-mark" aria-hidden="true">{{ expense.category.name|slice:":1"|upper }}</span>
+                            <span class="transaction-title-wrap"><strong>{{ expense.title }}</strong><span class="mobile-category">{{ expense.category.name }}</span></span>
+                        </a>
+                        <span class="category-pill">{{ expense.category.name }}</span>
+                        <span class="transaction-date">{{ expense.date|date:'M d, Y' }}</span>
+                        <strong class="transaction-amount">− Rs {{ expense.amount|floatformat:2 }}</strong>
+                        <div class="row-actions">
+                            <a href="{% url 'expense_update' expense.pk %}" aria-label="Edit {{ expense.title }}">Edit</a>
+                            <a class="delete-action" href="{% url 'expense_delete' expense.pk %}" aria-label="Delete {{ expense.title }}">Delete</a>
+                        </div>
+                    </article>
+                {% endfor %}
+            </div>
+            <div class="list-footer"><span>Showing {{ expense_count }} {% if expense_count == 1 %}transaction{% else %}transactions{% endif %}</span><span class="footer-check">✳ All caught up</span></div>
+        {% else %}
+            <div class="empty-state">
+                <span class="empty-icon" aria-hidden="true">▤</span>
+                <h3>{% if selected_category %}No expenses in this category{% else %}Nothing here just yet{% endif %}</h3>
+                <p>{% if selected_category %}Try another category or clear your filter.{% else %}Add your first expense and start seeing the bigger picture.{% endif %}</p>
+                {% if selected_category %}
+                    <a class="button button-secondary" href="{% url 'expense_list' %}">Clear filter</a>
+                {% else %}
+                    <a class="button button-primary" href="{% url 'expense_create' %}">Add your first expense</a>
+                {% endif %}
+            </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,27 @@
+{% extends 'expenses/base.html' %}
+
+{% block title %}{{ expense.title }} — Krishna{% endblock %}
+{% block breadcrumb %}<a href="{% url 'expense_list' %}">Overview</a><span class="crumb-separator">/</span> Expense{% endblock %}
+
+{% block content %}
+<div class="form-page">
+    <a class="back-link" href="{% url 'expense_list' %}">← Back to overview</a>
+    <div class="detail-card">
+        <div class="detail-top">
+            <span class="category-mark category-mark-large" aria-hidden="true">{{ expense.category.name|slice:":1"|upper }}</span>
+            <span class="category-pill">{{ expense.category.name }}</span>
+        </div>
+        <p class="eyebrow section-eyebrow">EXPENSE DETAILS</p>
+        <h1 class="detail-title">{{ expense.title }}</h1>
+        <p class="detail-amount">− Rs {{ expense.amount|floatformat:2 }}</p>
+        <div class="detail-meta">
+            <div><span class="detail-label">CATEGORY</span><strong>{{ expense.category.name }}</strong></div>
+            <div><span class="detail-label">DATE</span><strong>{{ expense.date|date:"F d, Y" }}</strong></div>
+        </div>
+        <div class="detail-actions">
+            <a class="button button-primary" href="{% url 'expense_update' expense.pk %}">Edit expense</a>
+            <a class="button button-danger-soft" href="{% url 'expense_delete' expense.pk %}">Delete</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

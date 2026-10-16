@@ -1,0 +1,22 @@
+{% extends 'expenses/base.html' %}
+
+{% block title %}Delete expense — Krishna{% endblock %}
+{% block breadcrumb %}<a href="{% url 'expense_list' %}">Overview</a><span class="crumb-separator">/</span> Delete expense{% endblock %}
+
+{% block content %}
+<div class="form-page">
+    <a class="back-link" href="{% url 'expense_detail' expense.pk %}">← Back to expense</a>
+    <div class="delete-card">
+        <span class="delete-icon" aria-hidden="true">!</span>
+        <p class="eyebrow section-eyebrow">PLEASE CONFIRM</p>
+        <h1>Delete this expense?</h1>
+        <p class="delete-copy"><strong>{{ expense.title }}</strong> · Rs {{ expense.amount|floatformat:2 }} · {{ expense.date|date:"M d, Y" }}</p>
+        <p class="delete-note">This action can't be undone.</p>
+        <form method="post" class="form-actions">
+            {% csrf_token %}
+            <button class="button button-danger" type="submit">Yes, delete expense</button>
+            <a class="button button-secondary" href="{% url 'expense_detail' expense.pk %}">Keep it</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

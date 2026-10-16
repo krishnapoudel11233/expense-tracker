@@ -1,0 +1,31 @@
+{% extends 'expenses/base.html' %}
+
+{% block title %}{{ page_title }} — Krishna{% endblock %}
+{% block breadcrumb %}<a href="{% url 'expense_list' %}">Overview</a><span class="crumb-separator">/</span> {{ page_title }}{% endblock %}
+
+{% block content %}
+<div class="form-page">
+    <a class="back-link" href="{% url 'expense_list' %}">← Back to overview</a>
+    <div class="form-heading">
+        <p class="eyebrow"><span class="eyebrow-dot"></span> KEEP YOUR RECORDS UP TO DATE</p>
+        <h1>{{ page_title }}<span class="heading-period">.</span></h1>
+        <p class="page-intro">A few details and you're all set.</p>
+    </div>
+    <form class="expense-form" method="post">
+        {% csrf_token %}
+        {% if form.non_field_errors %}<div class="form-errors">{{ form.non_field_errors }}</div>{% endif %}
+        {% for field in form %}
+            <div class="form-field">
+                <label for="{{ field.id_for_label }}">{{ field.label }}{% if field.field.required %}<span class="required-mark"> *</span>{% endif %}</label>
+                {{ field }}
+                {% if field.help_text %}<span class="field-help">{{ field.help_text }}</span>{% endif %}
+                {% for error in field.errors %}<span class="field-error">{{ error }}</span>{% endfor %}
+            </div>
+        {% endfor %}
+        <div class="form-actions">
+            <button class="button button-primary" type="submit">{{ submit_label }}</button>
+            <a class="button button-secondary" href="{% url 'expense_list' %}">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}
